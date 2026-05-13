@@ -32,22 +32,10 @@ public class Block {
 	protected List<Instruction> instructions;
 
 	/**
-	 * Local scope of the block.
-	 */
-	protected HierarchicalScope<Declaration> localScope;
-
-	/**
-	 * Size of memory (in TAM words) allocated for local variables in this block.
-	 * Computed during allocateMemory and used in getCode to generate POP.
-	 */
-	protected int localSize;
-
-	/**
 	 * Constructor for a block.
 	 */
 	public Block(List<Instruction> _instructions) {
 		this.instructions = _instructions;
-		this.localSize = 0;
 	}
 	
 	/* (non-Javadoc)
@@ -71,10 +59,10 @@ public class Block {
 	 * allowed.
 	 */
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
-		this.localScope = new SymbolTable(_scope);
+		HierarchicalScope<Declaration> localScope = new SymbolTable(_scope);
 		boolean ok = true;
 		for (Instruction instruction : this.instructions) {
-			ok &= instruction.collectAndPartialResolve(this.localScope);
+			ok &= instruction.collectAndPartialResolve(localScope);
 		}
 		return ok;
 	}
@@ -90,10 +78,10 @@ public class Block {
 	 * allowed.
 	 */
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope, FunctionDeclaration _container) {
-		this.localScope = new SymbolTable(_scope);
+		HierarchicalScope<Declaration> localScope = new SymbolTable(_scope);
 		boolean ok = true;
 		for (Instruction instruction : this.instructions) {
-			ok &= instruction.collectAndPartialResolve(this.localScope, _container);
+			ok &= instruction.collectAndPartialResolve(localScope, _container);
 		}
 		return ok;
 	}
@@ -106,11 +94,12 @@ public class Block {
 	 * block have been previously defined.
 	 */
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = true;
-		for (Instruction instruction : this.instructions) {
-			ok &= instruction.completeResolve(this.localScope);
-		}
-		return ok;
+            boolean ok = true;
+            for (Instruction instruction : this.instructions) {
+                ok &= instruction.completeResolve(_scope);
+            }
+            return ok;
+	    // throw new SemanticsUndefinedException("Semantics completeResolve is undefined in Block.");
 	}
 
 	/**
@@ -132,13 +121,11 @@ public class Block {
 	 * @param _register Inherited Register associated to the address of the variables.
 	 * @param _offset Inherited Current offset for the address of the variables.
 	 */	
-	public int allocateMemory(Register _register, int _offset) {
+	public void allocateMemory(Register _register, int _offset) {
 		int currentOffset = _offset;
 		for (Instruction instruction : this.instructions) {
 			currentOffset += instruction.allocateMemory(_register, currentOffset);
 		}
-		this.localSize = currentOffset - _offset;
-		return this.localSize;
 	}
 
 	/**
@@ -148,29 +135,11 @@ public class Block {
 	 * @return Synthesized AST for the generated TAM code.
 	 */
 	public Fragment getCode(TAMFactory _factory) {
-		Fragment _result = _factory.createFragment();
+		Fragment frag = _factory.createFragment();
 		for (Instruction instruction : this.instructions) {
-			_result.append(instruction.getCode(_factory));
+			frag.append(instruction.getCode(_factory));
 		}
-		// Clean up local variable stack space at end of block
-		if (this.localSize > 0) {
-			_result.add(_factory.createPop(0, this.localSize));
-		}
-		return _result;
-	}
-
-	/**
-	 * Generates code for this block without the trailing POP cleanup.
-	 * Used for function bodies where RETURN handles stack cleanup.
-	 * @param _factory Factory to create TAM instructions.
-	 * @return Fragment with the body code, no trailing POP.
-	 */
-	public Fragment getCodeWithoutCleanup(TAMFactory _factory) {
-		Fragment _result = _factory.createFragment();
-		for (Instruction instruction : this.instructions) {
-			_result.append(instruction.getCode(_factory));
-		}
-		return _result;
+		return frag;
 	}
 
 }

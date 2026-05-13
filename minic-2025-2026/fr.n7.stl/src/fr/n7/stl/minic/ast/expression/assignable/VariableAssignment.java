@@ -63,10 +63,7 @@ public class VariableAssignment extends AbstractIdentifier implements Assignable
 	 */
 	@Override
 	public Type getType() {
-		if (this.declaration != null) {
-			return this.declaration.getType();
-		}
-		return fr.n7.stl.minic.ast.type.AtomicType.ErrorType;
+		return this.declaration.getType();
 	}
 
 	/* (non-Javadoc)
@@ -75,20 +72,10 @@ public class VariableAssignment extends AbstractIdentifier implements Assignable
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
 		Fragment _result = _factory.createFragment();
-		_result.add(_factory.createStore(
-				this.declaration.getRegister(),
-				this.declaration.getOffset(),
-				this.declaration.getType().length()));
-		_result.addComment(this.toString() + " =");
-		return _result;
-	}
-
-	@Override
-	public Fragment getAddressCode(TAMFactory _factory) {
-		Fragment _result = _factory.createFragment();
 		_result.add(_factory.createLoadA(
-				this.declaration.getRegister(),
+				this.declaration.getRegister(), 
 				this.declaration.getOffset()));
+		_result.addComment(this.toString());
 		return _result;
 	}
 

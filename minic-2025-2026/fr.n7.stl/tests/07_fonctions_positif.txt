@@ -1,0 +1,18 @@
+int ajout(int a, int b) {
+    return (a + b);
+}
+
+int max(int a, int b) {
+    if (a > b) {
+        return a;
+    }
+    return b;
+}
+
+void main() {
+    int s = ajout(3, 4);
+    print(s);            
+
+    int m = max(10, 42);
+    print(m);            
+}

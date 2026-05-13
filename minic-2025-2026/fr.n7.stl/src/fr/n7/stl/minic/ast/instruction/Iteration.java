@@ -9,6 +9,7 @@ import fr.n7.stl.minic.ast.expression.Expression;
 import fr.n7.stl.minic.ast.instruction.declaration.FunctionDeclaration;
 import fr.n7.stl.minic.ast.scope.Declaration;
 import fr.n7.stl.minic.ast.scope.HierarchicalScope;
+import fr.n7.stl.minic.ast.type.AtomicType;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
@@ -41,16 +42,12 @@ public class Iteration implements Instruction {
 	 */
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = this.condition.collectAndPartialResolve(_scope);
-		ok &= this.body.collectAndPartialResolve(_scope);
-		return ok;
+		return this.condition.collectAndPartialResolve(_scope) && this.body.collectAndPartialResolve(_scope);
 	}
 	
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope, FunctionDeclaration _container) {
-		boolean ok = this.condition.collectAndPartialResolve(_scope);
-		ok &= this.body.collectAndPartialResolve(_scope, _container);
-		return ok;
+		return this.collectAndPartialResolve(_scope);
 	}
 	
 	/* (non-Javadoc)
@@ -58,9 +55,7 @@ public class Iteration implements Instruction {
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = this.condition.completeResolve(_scope);
-		ok &= this.body.completeResolve(_scope);
-		return ok;
+		return this.condition.completeResolve(_scope) && this.body.completeResolve(_scope);
 	}
 
 	/* (non-Javadoc)
@@ -68,13 +63,7 @@ public class Iteration implements Instruction {
 	 */
 	@Override
 	public boolean checkType() {
-		boolean ok = true;
-		if (!this.condition.getType().compatibleWith(fr.n7.stl.minic.ast.type.AtomicType.BooleanType)) {
-			fr.n7.stl.util.Logger.error("Iteration condition must be boolean.");
-			ok = false;
-		}
-		ok &= this.body.checkType();
-		return ok;
+		return this.condition.getType().compatibleWith(AtomicType.BooleanType) && this.body.checkType();
 	}
 
 	/* (non-Javadoc)
@@ -91,23 +80,21 @@ public class Iteration implements Instruction {
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		int labelNum = _factory.createLabelNumber();
-		String startLabel = "while_" + labelNum;
-		String endLabel = "endwhile_" + labelNum;
 		Fragment _result = _factory.createFragment();
-		// Evaluate condition with start label
-		Fragment _cond = this.condition.getCode(_factory);
-		_cond.addPrefix(startLabel);
-		_cond.addComment("while (...)");
-		_result.append(_cond);
-		// Jump to end if condition is false (0)
+		int id = _factory.createLabelNumber();
+		String startLabel = "while_" + id;
+		String endLabel = "end_while_" + id;
+
+		_result.add(_factory.createPop(0, 0));
+		_result.addPrefix(startLabel);
+		_result.append(this.condition.getCode(_factory));
 		_result.add(_factory.createJumpIf(endLabel, 0));
-		// Body
 		_result.append(this.body.getCode(_factory));
-		// Jump back to start
 		_result.add(_factory.createJump(startLabel));
-		// End label
+
+		_result.add(_factory.createPop(0, 0));
 		_result.addSuffix(endLabel);
+
 		return _result;
 	}
 

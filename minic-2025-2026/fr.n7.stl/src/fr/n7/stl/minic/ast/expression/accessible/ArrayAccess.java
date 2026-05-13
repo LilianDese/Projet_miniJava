@@ -34,8 +34,8 @@ public class ArrayAccess extends AbstractArray<AccessibleExpression> implements 
 		_result.append(this.array.getCode(_factory));
 		_result.append(this.index.getCode(_factory));
 		_result.add(_factory.createLoadL(this.getType().length()));
-		_result.add(TAMFactory.createBinaryOperator(fr.n7.stl.minic.ast.expression.accessible.BinaryOperator.Multiply));
-		_result.add(TAMFactory.createBinaryOperator(fr.n7.stl.minic.ast.expression.accessible.BinaryOperator.Add));
+		_result.add(fr.n7.stl.tam.ast.Library.IMul);
+		_result.add(fr.n7.stl.tam.ast.Library.IAdd);
 		_result.add(_factory.createLoadI(this.getType().length()));
 		return _result;
 	}

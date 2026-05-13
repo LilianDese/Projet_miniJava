@@ -5,7 +5,6 @@ package fr.n7.stl.minic.ast.instruction.declaration;
 
 import fr.n7.stl.minic.ast.scope.Declaration;
 import fr.n7.stl.minic.ast.type.Type;
-import fr.n7.stl.tam.ast.Register;
 
 /**
  * Abstract Syntax Tree node for a formal parameter in a function declaration.
@@ -30,11 +29,6 @@ public class ParameterDeclaration implements Declaration {
 	protected int offset;
 
 	/**
-	 * Register for the formal parameter (always LB in TAM)
-	 */
-	protected Register register;
-
-	/**
 	 * Builds an AST node for a formal parameter declaration
 	 * @param _name : Name of the formal parameter
 	 * @param _type : AST node for the type of the formal parameter
@@ -43,7 +37,6 @@ public class ParameterDeclaration implements Declaration {
 		this.name = _name;
 		this.type = _type;
 		this.offset = -1; // This value should never occur...
-		this.register = Register.LB;
 	}
 
 	/* (non-Javadoc)
@@ -78,20 +71,8 @@ public class ParameterDeclaration implements Declaration {
 		return this.offset;
 	}
 
-	/**
-	 * Set the offset of the formal parameter (called during memory allocation).
-	 * @param _offset The offset to assign.
-	 */
-	public void setOffset(int _offset) {
-		this.offset = _offset;
-	}
-
-	/**
-	 * Provide the register of the formal parameter (always LB).
-	 * @return Register for the formal parameter.
-	 */
-	public Register getRegister() {
-		return this.register;
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 
 }

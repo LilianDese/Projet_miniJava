@@ -3,8 +3,11 @@ package fr.n7.stl.minic.ast.expression;
 import fr.n7.stl.minic.ast.SemanticsUndefinedException;
 import fr.n7.stl.minic.ast.scope.Declaration;
 import fr.n7.stl.minic.ast.scope.HierarchicalScope;
+import fr.n7.stl.minic.ast.type.NamedType;
+import fr.n7.stl.minic.ast.type.RecordType;
 import fr.n7.stl.minic.ast.type.Type;
 import fr.n7.stl.minic.ast.type.declaration.FieldDeclaration;
+import fr.n7.stl.util.Logger;
 
 /**
  * Common elements between left (Assignable) and right (Expression) end sides of assignments. These elements
@@ -49,7 +52,31 @@ public abstract class AbstractField<RecordKind extends Expression> implements Ex
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
-		return this.record.completeResolve(_scope);
+		boolean ok = this.record.completeResolve(_scope);
+
+		Type recordType = this.record.getType();
+
+		if (recordType instanceof NamedType) {
+    		recordType = ((NamedType) recordType).getType();
+		}
+
+		if (recordType instanceof RecordType) {
+			RecordType rt = (RecordType) recordType;
+			if (rt.contains(this.name)) {
+            	this.field = rt.get(this.name); 
+            	return ok;
+			} else {
+				Logger.error("Field " + this.name + " not found in " + rt.getName());
+				return false;
+			}
+		}
+		else {
+			Logger.error("Not a record type");
+			return false; 
+		} 
+
+
+
 	}
 
 	/**
@@ -57,22 +84,7 @@ public abstract class AbstractField<RecordKind extends Expression> implements Ex
 	 * @return Synthesized Type of the expression.
 	 */
 	public Type getType() {
-		Type recordType = this.record.getType();
-		if (recordType instanceof fr.n7.stl.minic.ast.type.NamedType) {
-			recordType = ((fr.n7.stl.minic.ast.type.NamedType) recordType).getType();
-		}
-		if (recordType instanceof fr.n7.stl.minic.ast.type.RecordType) {
-			fr.n7.stl.minic.ast.type.declaration.FieldDeclaration f = ((fr.n7.stl.minic.ast.type.RecordType) recordType).get(this.name);
-			if (f != null) {
-				return f.getType();
-			} else {
-				fr.n7.stl.util.Logger.error("Field " + this.name + " not found.");
-				return fr.n7.stl.minic.ast.type.AtomicType.ErrorType;
-			}
-		} else {
-			fr.n7.stl.util.Logger.error("Not a record type.");
-			return fr.n7.stl.minic.ast.type.AtomicType.ErrorType;
-		}
+		return this.field.getType();
 	}
 
 }

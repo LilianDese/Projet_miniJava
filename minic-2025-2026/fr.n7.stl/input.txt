@@ -1,0 +1,5 @@
+void main() {
+    const int i = 2;
+    i = 4;
+
+}

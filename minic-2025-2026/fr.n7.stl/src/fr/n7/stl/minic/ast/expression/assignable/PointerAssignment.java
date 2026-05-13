@@ -30,14 +30,6 @@ public class PointerAssignment extends AbstractPointer<AccessibleExpression> imp
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		Fragment _result = _factory.createFragment();
-		_result.append(this.pointer.getCode(_factory));
-		_result.add(_factory.createStoreI(this.getType().length()));
-		return _result;
-	}
-
-	@Override
-	public Fragment getAddressCode(TAMFactory _factory) {
 		return this.pointer.getCode(_factory);
 	}
 	

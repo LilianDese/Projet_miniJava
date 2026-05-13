@@ -1,0 +1,4 @@
+void main() {
+    int t[] = new int[3];
+    t[true] = 10;
+}

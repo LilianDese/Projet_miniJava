@@ -30,9 +30,10 @@ public class PointerType implements Type {
 	@Override
 	public boolean equalsTo(Type _other) {
 		if (_other instanceof PointerType) {
-			return this.element.equalsTo(((PointerType) _other).getPointedType());
-		}
-		return false;
+			return this.element.equalsTo(((PointerType) _other).element);
+		} else {
+			return false;
+		} 
 	}
 
 	/* (non-Javadoc)
@@ -40,10 +41,11 @@ public class PointerType implements Type {
 	 */
 	@Override
 	public boolean compatibleWith(Type _other) {
-		if (_other instanceof PointerType) {
-			return this.element.compatibleWith(((PointerType) _other).getPointedType());
-		}
-		return false;
+		if(_other instanceof PointerType){
+			return this.element.compatibleWith(((PointerType) _other).element);
+		} else {
+			return false;
+		} 
 	}
 
 	/* (non-Javadoc)
@@ -51,10 +53,13 @@ public class PointerType implements Type {
 	 */
 	@Override
 	public Type merge(Type _other) {
-		if (_other instanceof PointerType) {
-			return new PointerType(this.element.merge(((PointerType) _other).getPointedType()));
-		}
-		return AtomicType.ErrorType;
+		if(_other instanceof PointerType){
+			return new PointerType(this.element.merge(((PointerType) _other).element));
+		}	
+		else{
+			return AtomicType.ErrorType;
+		} 
+
 	}
 
 	/* (non-Javadoc)

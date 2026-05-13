@@ -1,0 +1,43 @@
+;fr.n7.stl.minic.ast.expression.accessible.ParameterAccess@574caa3f
+;(a + b)
+ajout
+LOAD (1) -2[LB]
+;fr.n7.stl.minic.ast.expression.accessible.ParameterAccess@64cee07
+LOAD (1) -1[LB]
+SUBR IAdd
+RETURN (1) 2
+RETURN (1) 2
+;fr.n7.stl.minic.ast.expression.accessible.ParameterAccess@2280cdac
+;(a > b)
+max
+LOAD (1) -2[LB]
+;fr.n7.stl.minic.ast.expression.accessible.ParameterAccess@1517365b
+LOAD (1) -1[LB]
+SUBR IGtr
+JUMPIF (0) else_1
+;fr.n7.stl.minic.ast.expression.accessible.ParameterAccess@4fccd51b
+LOAD (1) -2[LB]
+RETURN (1) 2
+POP (0) 0
+else_1
+;fr.n7.stl.minic.ast.expression.accessible.ParameterAccess@44e81672
+LOAD (1) -1[LB]
+RETURN (1) 2
+RETURN (1) 2
+PUSH 1
+LOADL 3
+LOADL 4
+CALL (LB) ajout
+STORE (1) 0[SB]
+LOAD (1) 0[SB]
+SUBR IOut
+PUSH 1
+LOADL 10
+LOADL 42
+CALL (LB) max
+STORE (1) 1[SB]
+LOAD (1) 1[SB]
+SUBR IOut
+HALT
+HALT
+

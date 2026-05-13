@@ -50,12 +50,13 @@ public class TypeDeclaration implements DeclarationInstruction {
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
 		if (_scope.accepts(this)) {
-			_scope.register(this);
-			return true;
-		} else {
-			fr.n7.stl.util.Logger.error("Type : " + this.name + " is already defined.");
-			return false;
-		}
+                _scope.register(this);
+                return true;
+            } else {
+                return false;
+			}
+        
+		
 	}
 	
 	@Override

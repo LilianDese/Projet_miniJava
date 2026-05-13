@@ -108,7 +108,7 @@ public class VariableDeclaration implements DeclarationInstruction {
                 _scope.register(this);
                 return this.value.collectAndPartialResolve(_scope);
             } else {
-                Logger.error("Variable : " + this.name + " is already defined.");
+				Logger.error("Variable " + this.name + " is already declared in this scope.");
                 return false;
             }
 	    // throw new SemanticsUndefinedException( "Semantics collectAndPartialResolve is undefined in VariableDeclaration.");
@@ -133,11 +133,7 @@ public class VariableDeclaration implements DeclarationInstruction {
 	 */
 	@Override
 	public boolean checkType() {
-		boolean ok = this.value.getType().compatibleWith(this.type);
-		if (!ok) {
-			Logger.error("Variable type mismatch in declaration of " + this.name);
-		}
-		return ok;
+		return this.value.getType().compatibleWith(this.type);
 	}
 
 	/* (non-Javadoc)
@@ -155,11 +151,11 @@ public class VariableDeclaration implements DeclarationInstruction {
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		// In TAM, local variables live on the stack.
-		// Just push the initial value - it occupies the pre-allocated slot at (register, offset).
-		Fragment _result = this.value.getCode(_factory);
-		_result.addComment("Variable declaration: " + this.name + " at [" + this.register + "+" + this.offset + "]");
-		return _result;
+		Fragment frag = _factory.createFragment();
+		frag.add(_factory.createPush(this.type.length()));
+		frag.append(this.value.getCode(_factory));
+		frag.add(_factory.createStore(this.register, this.offset, this.type.length()));
+		return frag;
 	}
 
 }

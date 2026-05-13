@@ -16,13 +16,14 @@ import fr.n7.stl.tam.ast.TAMFactory;
 
 /**
  * Implementation of the Abstract Syntax Tree node for a return instruction.
+ * 
  * @author Marc Pantel
  *
  */
 public class Return implements Instruction {
 
 	protected Expression value;
-	
+
 	protected FunctionDeclaration function;
 
 	public Return(Expression _value) {
@@ -30,81 +31,91 @@ public class Return implements Instruction {
 		this.function = null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return ((this.function != null)?("// Return in function : " + this.function.getName() + "\n"):"") + "return " + this.value + ";\n";
+		return ((this.function != null) ? ("// Return in function : " + this.function.getName() + "\n") : "")
+				+ "return " + this.value + ";\n";
 	}
-	
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.instruction.Instruction#collect(fr.n7.stl.block.ast.scope.Scope)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.n7.stl.block.ast.instruction.Instruction#collect(fr.n7.stl.block.ast.scope
+	 * .Scope)
 	 */
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
 		return this.value.collectAndPartialResolve(_scope);
 	}
-	
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.instruction.Instruction#resolve(fr.n7.stl.block.ast.scope.Scope)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.n7.stl.block.ast.instruction.Instruction#resolve(fr.n7.stl.block.ast.scope
+	 * .Scope)
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
 		return this.value.completeResolve(_scope);
 	}
-	
+
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope, FunctionDeclaration _container) {
 		if (this.function == null) {
-			this.function = _container;		
+			this.function = _container;
 		} else {
-			throw new InvalidParameterException("Trying to set a function declaration to a return instruction when one has already been set.");
+			throw new InvalidParameterException(
+					"Trying to set a function declaration to a return instruction when one has already been set.");
 		}
 		return this.collectAndPartialResolve(_scope);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.n7.stl.block.ast.Instruction#checkType()
 	 */
 	@Override
 	public boolean checkType() {
-		boolean ok = true;
-		if (this.function != null) {
-			ok = this.value.getType().compatibleWith(this.function.getType());
-			if (!ok) {
-				fr.n7.stl.util.Logger.error("Return type mismatch.");
-			}
-		} else {
-			fr.n7.stl.util.Logger.error("Return outside of a function.");
-			ok = false;
-		}
-		return ok;
+		return this.value.getType().compatibleWith(this.function.getType());
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.Instruction#allocateMemory(fr.n7.stl.tam.ast.Register, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.n7.stl.block.ast.Instruction#allocateMemory(fr.n7.stl.tam.ast.Register,
+	 * int)
 	 */
 	@Override
 	public int allocateMemory(Register _register, int _offset) {
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.n7.stl.block.ast.Instruction#getCode(fr.n7.stl.tam.ast.TAMFactory)
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		Fragment _result = this.value.getCode(_factory);
-		_result.addComment("return");
-		if (this.function != null) {
-			int returnSize = this.function.getType().length();
-			int totalParamSize = 0;
-			for (fr.n7.stl.minic.ast.instruction.declaration.ParameterDeclaration p : this.function.getParameters()) {
-				totalParamSize += p.getType().length();
-			}
-			_result.add(_factory.createReturn(returnSize, totalParamSize));
+		Fragment _result = _factory.createFragment();
+		if (this.value != null) {
+			_result.append(this.value.getCode(_factory));
 		}
+		int paramSize = 0;
+		for (fr.n7.stl.minic.ast.instruction.declaration.ParameterDeclaration param : this.function.getParameters()) {
+			paramSize += param.getType().length();
+		}
+		int returnSize = (this.value != null) ? this.value.getType().length() : 0;
+		_result.add(_factory.createReturn(returnSize, paramSize));
 		return _result;
 	}
 

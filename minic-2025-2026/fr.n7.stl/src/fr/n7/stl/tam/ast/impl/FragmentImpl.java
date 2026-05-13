@@ -79,9 +79,4 @@ public class FragmentImpl implements Fragment {
 		}
 	}
 
-	@Override
-	public boolean isEmpty() {
-		return this.instructions.isEmpty();
-	}
-
 }

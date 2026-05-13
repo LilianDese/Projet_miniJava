@@ -49,9 +49,7 @@ public class Assignment implements Instruction, Expression {
 	 */
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = this.assignable.collectAndPartialResolve(_scope);
-		ok &= this.value.collectAndPartialResolve(_scope);
-		return ok;
+		return this.assignable.collectAndPartialResolve(_scope) && this.value.collectAndPartialResolve(_scope);
 	}
 	
 	@Override
@@ -64,9 +62,7 @@ public class Assignment implements Instruction, Expression {
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = this.assignable.completeResolve(_scope);
-		ok &= this.value.completeResolve(_scope);
-		return ok;
+		return this.assignable.completeResolve(_scope) && this.value.completeResolve(_scope);
 	}
 
 	/* (non-Javadoc)
@@ -74,7 +70,7 @@ public class Assignment implements Instruction, Expression {
 	 */
 	@Override
 	public Type getType() {
-		return this.assignable.getType();
+		return this.value.getType();
 	}
 
 	/* (non-Javadoc)
@@ -82,11 +78,7 @@ public class Assignment implements Instruction, Expression {
 	 */
 	@Override
 	public boolean checkType() {
-		boolean ok = this.value.getType().compatibleWith(this.assignable.getType());
-		if (!ok) {
-			fr.n7.stl.util.Logger.error("Assignment type mismatch.");
-		}
-		return ok;
+		return this.value.getType().compatibleWith(this.assignable.getType());
 	}
 	
 	/* (non-Javadoc)
@@ -94,7 +86,6 @@ public class Assignment implements Instruction, Expression {
 	 */
 	@Override
 	public int allocateMemory(Register _register, int _offset) {
-		// Assignment allocates no memory
 		return 0;
 	}
 
@@ -103,11 +94,10 @@ public class Assignment implements Instruction, Expression {
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		// Evaluate the right-hand side value
-		Fragment _result = this.value.getCode(_factory);
-		_result.addComment("Assignment: " + this.assignable.toString() + " = ...");
-		// Generate store code for the assignable target
+		Fragment _result = _factory.createFragment();
+		_result.append(this.value.getCode(_factory));
 		_result.append(this.assignable.getCode(_factory));
+		_result.add(_factory.createStoreI(this.assignable.getType().length()));
 		return _result;
 	}
 

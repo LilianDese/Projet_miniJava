@@ -60,7 +60,6 @@ public class ArrayType implements Type {
 	 */
 	@Override
 	public int length() {
-		// An array value is represented as a pointer (address) in TAM: 1 word.
 		return 1;
 	}
 

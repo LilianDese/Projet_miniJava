@@ -46,15 +46,19 @@ public class EnumerationType implements Type, Declaration {
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.Type#equalsTo(fr.n7.stl.block.ast.Type)
+	 * @see fr.n7.stl.block.ast.type.Type#equalsTo(fr.n7.stl.block.ast.type.Type)
 	 */
 	@Override
 	public boolean equalsTo(Type _other) {
-		return this == _other;
+		if (_other instanceof EnumerationType) {
+			return this.name.equals(((EnumerationType) _other).name); 
+		} else{
+			return false; 
+		} 
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.Type#compatibleWith(fr.n7.stl.block.ast.Type)
+	 * @see fr.n7.stl.block.ast.type.Type#compatibleWith(fr.n7.stl.block.ast.type.Type)
 	 */
 	@Override
 	public boolean compatibleWith(Type _other) {
@@ -62,19 +66,18 @@ public class EnumerationType implements Type, Declaration {
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.Type#merge(fr.n7.stl.block.ast.Type)
+	 * @see fr.n7.stl.block.ast.type.Type#merge(fr.n7.stl.block.ast.type.Type)
 	 */
 	@Override
 	public Type merge(Type _other) {
-		if (this.compatibleWith(_other)) {
+		if (this.equalsTo(_other)) {
 			return this;
-		} else {
-			return AtomicType.ErrorType;
 		}
+		return AtomicType.ErrorType;
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.Type#length(int)
+	 * @see fr.n7.stl.block.ast.type.Type#length()
 	 */
 	@Override
 	public int length() {

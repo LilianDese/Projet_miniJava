@@ -40,10 +40,4 @@ public interface Fragment {
 	 */
 	public void append(Fragment _fragment);
 
-	/**
-	 * Check if the fragment is empty.
-	 * @return true if the fragment has no instructions, false otherwise.
-	 */
-	public boolean isEmpty();
-
 }

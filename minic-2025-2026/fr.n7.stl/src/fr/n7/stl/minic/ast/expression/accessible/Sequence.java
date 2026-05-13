@@ -17,26 +17,31 @@ import fr.n7.stl.tam.ast.TAMFactory;
 
 /**
  * Abstract Syntax Tree node for an expression building a sequence of values.
+ * 
  * @author Marc Pantel
  *
  */
 public class Sequence implements AccessibleExpression {
 
-	
 	/**
 	 * List of AST nodes of the expressions computing the values in the sequence.
 	 */
 	protected List<AccessibleExpression> values;
 
 	/**
-	 * Builds an Abstract Syntax Tree node for an expression building a sequence of values.
-	 * @param _values : List of AST nodes of the expressions computing the values in the sequence.
+	 * Builds an Abstract Syntax Tree node for an expression building a sequence of
+	 * values.
+	 * 
+	 * @param _values : List of AST nodes of the expressions computing the values in
+	 *                the sequence.
 	 */
 	public Sequence(List<AccessibleExpression> _values) {
 		this.values = _values;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -52,8 +57,12 @@ public class Sequence implements AccessibleExpression {
 		return _result + " }";
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.expression.Expression#collect(fr.n7.stl.block.ast.scope.HierarchicalScope)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.n7.stl.block.ast.expression.Expression#collect(fr.n7.stl.block.ast.scope.
+	 * HierarchicalScope)
 	 */
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
@@ -64,8 +73,12 @@ public class Sequence implements AccessibleExpression {
 		return _result;
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.expression.Expression#resolve(fr.n7.stl.block.ast.scope.HierarchicalScope)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.n7.stl.block.ast.expression.Expression#resolve(fr.n7.stl.block.ast.scope.
+	 * HierarchicalScope)
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
@@ -75,8 +88,10 @@ public class Sequence implements AccessibleExpression {
 		}
 		return _result;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.n7.stl.block.ast.Expression#getType()
 	 */
 	@Override
@@ -88,7 +103,9 @@ public class Sequence implements AccessibleExpression {
 		return _result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.n7.stl.block.ast.Expression#getCode(fr.n7.stl.tam.ast.TAMFactory)
 	 */
 	@Override

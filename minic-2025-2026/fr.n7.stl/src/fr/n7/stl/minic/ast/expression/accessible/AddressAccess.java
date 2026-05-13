@@ -7,6 +7,7 @@ import fr.n7.stl.minic.ast.SemanticsUndefinedException;
 import fr.n7.stl.minic.ast.expression.assignable.AssignableExpression;
 import fr.n7.stl.minic.ast.scope.Declaration;
 import fr.n7.stl.minic.ast.scope.HierarchicalScope;
+import fr.n7.stl.minic.ast.type.PointerType;
 import fr.n7.stl.minic.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.TAMFactory;
@@ -30,7 +31,7 @@ public class AddressAccess implements AccessibleExpression {
 	}
 	
 	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.expression.Expression#collect(fr.n7.stl.block.ast.scope.HierarchicalScope)
+	 * @see fr.n7.stl.block.ast.expression.Expression#collect(fr.n7.stl.block.ast.scope.Scope)
 	 */
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
@@ -38,7 +39,7 @@ public class AddressAccess implements AccessibleExpression {
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.expression.Expression#resolve(fr.n7.stl.block.ast.scope.HierarchicalScope)
+	 * @see fr.n7.stl.block.ast.expression.Expression#resolve(fr.n7.stl.block.ast.scope.Scope)
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
@@ -50,7 +51,7 @@ public class AddressAccess implements AccessibleExpression {
 	 */
 	@Override
 	public Type getType() {
-		return new fr.n7.stl.minic.ast.type.PointerType(this.assignable.getType());
+		return new PointerType(this.assignable.getType());
 	}
 	
 	/* (non-Javadoc)
@@ -58,7 +59,7 @@ public class AddressAccess implements AccessibleExpression {
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		return this.assignable.getAddressCode(_factory);
+		return this.assignable.getCode(_factory);
 	}
 
 }

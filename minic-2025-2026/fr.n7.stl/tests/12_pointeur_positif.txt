@@ -1,0 +1,11 @@
+void main() {
+    int* p = new int();
+    *p = 42;
+    int val = *p;
+    print(val);     
+
+    int x = 7;
+    int* q = &x;
+    *q = 99;
+    print(x);        
+}

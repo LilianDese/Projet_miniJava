@@ -56,43 +56,22 @@ public abstract class AbstractConversion<TargetType> implements Expression {
 	}
 	
 	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.expression.Expression#collect(fr.n7.stl.block.ast.scope.HierarchicalScope)
+	 * @see fr.n7.stl.block.ast.expression.Expression#collect(fr.n7.stl.block.ast.scope.Scope)
 	 */
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = true;
-		if (this.target instanceof Expression) {
-			ok &= ((Expression) this.target).collectAndPartialResolve(_scope);
+		if (this.target instanceof Expression){
+			return ((Expression) this.target).collectAndPartialResolve(_scope);
 		}
-		return ok;
+		return true;
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.expression.Expression#resolve(fr.n7.stl.block.ast.scope.HierarchicalScope)
+	 * @see fr.n7.stl.block.ast.expression.Expression#resolve(fr.n7.stl.block.ast.scope.Scope)
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = true;
-		if (this.target instanceof Expression) {
-			ok &= ((Expression) this.target).completeResolve(_scope);
-		}
-		if (this.type != null) {
-			ok &= this.type.completeResolve(_scope);
-		} else {
-			if (_scope.knows(this.name)) {
-				Declaration _declaration = _scope.get(this.name);
-				if (_declaration instanceof fr.n7.stl.minic.ast.instruction.declaration.TypeDeclaration) {
-					this.type = ((fr.n7.stl.minic.ast.instruction.declaration.TypeDeclaration) _declaration).getType();
-				} else {
-					fr.n7.stl.util.Logger.error("The declaration for " + this.name + " is of the wrong kind.");
-					ok = false;
-				}
-			} else {
-				fr.n7.stl.util.Logger.error("The identifier " + this.name + " has not been found.");
-				ok = false;
-			}
-		}
-		return ok;
+		throw new SemanticsUndefinedException("Semantics resolve undefined in TypeConversion.");
 	}
 
 	/* (non-Javadoc)

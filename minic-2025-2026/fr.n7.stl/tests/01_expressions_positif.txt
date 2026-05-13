@@ -1,0 +1,28 @@
+void main() {
+
+    int a = 3;
+    int b = 5;
+    int somme  = (a + b);
+    int diff   = (b - a);
+    int produit = (a * b);
+    int quot   = (b / a);
+    int reste  = (b % a);
+
+    boolean egal   = (a == b);
+    boolean diff2  = (a != b);
+    boolean inf    = (a < b);
+    boolean sup    = (a > b);
+    boolean infEg  = (a <= b);
+    boolean supEg  = (a >= b);
+
+    boolean et  = (inf && supEg);
+    boolean ou  = (egal || inf);
+
+    int neg = -a;
+
+    const int MAX = 100;
+    int d = MAX;
+
+    print(somme);
+    print(neg);
+}

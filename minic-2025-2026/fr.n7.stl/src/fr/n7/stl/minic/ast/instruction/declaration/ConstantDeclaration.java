@@ -3,7 +3,6 @@
  */
 package fr.n7.stl.minic.ast.instruction.declaration;
 
-import fr.n7.stl.util.Logger;
 import fr.n7.stl.minic.ast.SemanticsUndefinedException;
 import fr.n7.stl.minic.ast.expression.Expression;
 import fr.n7.stl.minic.ast.instruction.Instruction;
@@ -85,12 +84,11 @@ public class ConstantDeclaration implements DeclarationInstruction {
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
 		if (_scope.accepts(this)) {
-			_scope.register(this);
-			return this.value.collectAndPartialResolve(_scope);
-		} else {
-			Logger.error("Constant : " + this.name + " is already defined.");
-			return false;
-		}
+                _scope.register(this);
+                return this.value.collectAndPartialResolve(_scope);
+            } else {
+                return false;
+            }
 	}
 	
 	@Override
@@ -103,7 +101,7 @@ public class ConstantDeclaration implements DeclarationInstruction {
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
-		return this.value.completeResolve(_scope) && this.type.completeResolve(_scope);
+		return this.type.completeResolve(_scope) && this.value.completeResolve(_scope);
 	}
 
 	/* (non-Javadoc)
@@ -111,11 +109,7 @@ public class ConstantDeclaration implements DeclarationInstruction {
 	 */
 	@Override
 	public boolean checkType() {
-		boolean ok = this.value.getType().compatibleWith(this.type);
-		if (!ok) {
-			Logger.error("Constant type mismatch in declaration of " + this.name);
-		}
-		return ok;
+		return this.value.getType().compatibleWith(this.type);
 	}
 
 	/* (non-Javadoc)
@@ -123,7 +117,6 @@ public class ConstantDeclaration implements DeclarationInstruction {
 	 */
 	@Override
 	public int allocateMemory(Register _register, int _offset) {
-		// Constants are inlined - no stack space allocated
 		return 0;
 	}
 
@@ -132,8 +125,7 @@ public class ConstantDeclaration implements DeclarationInstruction {
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		// When accessed via ConstantAccess, the value expression is evaluated inline
-		return this.value.getCode(_factory);
+		return _factory.createFragment();
 	}
 
 }

@@ -1,0 +1,9 @@
+void main() {
+    <int,int> p2 = <3,true>;
+}
+
+
+
+
+
+

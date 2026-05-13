@@ -50,10 +50,7 @@ public class AbstractConditional<ExpressionKind extends Expression> implements E
 	 */
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = this.condition.collectAndPartialResolve(_scope);
-		ok &= this.thenExpression.collectAndPartialResolve(_scope);
-		ok &= this.elseExpression.collectAndPartialResolve(_scope);
-		return ok;
+		throw new SemanticsUndefinedException( "Semantics collect is undefined in ConditionalExpression.");
 	}
 
 	/* (non-Javadoc)
@@ -61,10 +58,7 @@ public class AbstractConditional<ExpressionKind extends Expression> implements E
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = this.condition.completeResolve(_scope);
-		ok &= this.thenExpression.completeResolve(_scope);
-		ok &= this.elseExpression.completeResolve(_scope);
-		return ok;
+		throw new SemanticsUndefinedException( "Semantics resolve is undefined in ConditionalExpression.");
 	}
 
 	/* (non-Javadoc)
@@ -80,7 +74,7 @@ public class AbstractConditional<ExpressionKind extends Expression> implements E
 	 */
 	@Override
 	public Type getType() {
-		return this.thenExpression.getType().merge(this.elseExpression.getType());
+		throw new SemanticsUndefinedException( "Semantics getType is undefined in ConditionalExpression.");
 	}
 
 	/* (non-Javadoc)
@@ -89,21 +83,18 @@ public class AbstractConditional<ExpressionKind extends Expression> implements E
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
 		Fragment _result = _factory.createFragment();
-		int labelNum = _factory.createLabelNumber();
-		String elseLabel = "cond_else_" + labelNum;
-		String endLabel = "cond_end_" + labelNum;
-		
+		int id = _factory.createLabelNumber();
+		String elseLabel = "cond_else_" + id;
+		String endLabel = "cond_end_" + id;
+
 		_result.append(this.condition.getCode(_factory));
 		_result.add(_factory.createJumpIf(elseLabel, 0));
-		
 		_result.append(this.thenExpression.getCode(_factory));
 		_result.add(_factory.createJump(endLabel));
-		
-		Fragment _else = this.elseExpression.getCode(_factory);
-		_else.addPrefix(elseLabel);
-		_result.append(_else);
-		
+		_result.addPrefix(elseLabel);
+		_result.append(this.elseExpression.getCode(_factory));
 		_result.addSuffix(endLabel);
+
 		return _result;
 	}
 

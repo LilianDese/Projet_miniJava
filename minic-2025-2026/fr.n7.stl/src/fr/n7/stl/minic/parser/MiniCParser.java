@@ -626,6 +626,28 @@ public class MiniCParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
+	public static class InstructionTantQueContext extends InstructionContext {
+		public BlocContext alors;
+		public TerminalNode TantQue() { return getToken(MiniCParser.TantQue, 0); }
+		public TerminalNode ParentheseOuvrante() { return getToken(MiniCParser.ParentheseOuvrante, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode ParentheseFermante() { return getToken(MiniCParser.ParentheseFermante, 0); }
+		public BlocContext bloc() {
+			return getRuleContext(BlocContext.class,0);
+		}
+		public InstructionTantQueContext(InstructionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiniCParserListener ) ((MiniCParserListener)listener).enterInstructionTantQue(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiniCParserListener ) ((MiniCParserListener)listener).exitInstructionTantQue(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class InstructionSiSinonContext extends InstructionContext {
 		public BlocContext alors;
 		public BlocContext sinon;
@@ -650,28 +672,6 @@ public class MiniCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof MiniCParserListener ) ((MiniCParserListener)listener).exitInstructionSiSinon(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class InstructionTantQueContext extends InstructionContext {
-		public BlocContext corps;
-		public TerminalNode TantQue() { return getToken(MiniCParser.TantQue, 0); }
-		public TerminalNode ParentheseOuvrante() { return getToken(MiniCParser.ParentheseOuvrante, 0); }
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
-		public TerminalNode ParentheseFermante() { return getToken(MiniCParser.ParentheseFermante, 0); }
-		public BlocContext bloc() {
-			return getRuleContext(BlocContext.class,0);
-		}
-		public InstructionTantQueContext(InstructionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MiniCParserListener ) ((MiniCParserListener)listener).enterInstructionTantQue(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MiniCParserListener ) ((MiniCParserListener)listener).exitInstructionTantQue(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -813,11 +813,11 @@ public class MiniCParser extends Parser {
 				}
 				break;
 			case 4:
-				_localctx = new InstructionSiSinonContext(_localctx);
+				_localctx = new InstructionTantQueContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(111);
-				match(Si);
+				match(TantQue);
 				setState(112);
 				match(ParentheseOuvrante);
 				setState(113);
@@ -825,35 +825,35 @@ public class MiniCParser extends Parser {
 				setState(114);
 				match(ParentheseFermante);
 				setState(115);
-				((InstructionSiSinonContext)_localctx).alors = bloc();
+				((InstructionTantQueContext)_localctx).alors = bloc();
+				}
+				break;
+			case 5:
+				_localctx = new InstructionSiSinonContext(_localctx);
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(117);
+				match(Si);
 				setState(118);
+				match(ParentheseOuvrante);
+				setState(119);
+				expression(0);
+				setState(120);
+				match(ParentheseFermante);
+				setState(121);
+				((InstructionSiSinonContext)_localctx).alors = bloc();
+				setState(124);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==Sinon) {
 					{
-					setState(116);
+					setState(122);
 					match(Sinon);
-					setState(117);
+					setState(123);
 					((InstructionSiSinonContext)_localctx).sinon = bloc();
 					}
 				}
 
-				}
-				break;
-			case 5:
-				_localctx = new InstructionTantQueContext(_localctx);
-				enterOuterAlt(_localctx, 5);
-				{
-				setState(120);
-				match(TantQue);
-				setState(121);
-				match(ParentheseOuvrante);
-				setState(122);
-				expression(0);
-				setState(123);
-				match(ParentheseFermante);
-				setState(124);
-				((InstructionTantQueContext)_localctx).corps = bloc();
 				}
 				break;
 			case 6:
@@ -2963,8 +2963,8 @@ public class MiniCParser extends Parser {
 		"\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004"+
 		"\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004"+
 		"\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004"+
-		"\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0003\u0004w\b\u0004"+
 		"\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004"+
+		"\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0003\u0004}\b\u0004"+
 		"\u0001\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0003\u0004\u0083\b\u0004"+
 		"\u0001\u0005\u0001\u0005\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0006"+
 		"\u0001\u0007\u0001\u0007\u0001\u0007\u0005\u0007\u008e\b\u0007\n\u0007"+
@@ -3033,17 +3033,17 @@ public class MiniCParser extends Parser {
 		"\u0000\u0000e\u0083\u0001\u0000\u0000\u0000fg\u0003\u0012\t\u0000gh\u0005"+
 		"\u0001\u0000\u0000hi\u0003\u0018\f\u0000ij\u0005\f\u0000\u0000j\u0083"+
 		"\u0001\u0000\u0000\u0000kl\u0005\r\u0000\u0000lm\u0003\u0018\f\u0000m"+
-		"n\u0005\f\u0000\u0000n\u0083\u0001\u0000\u0000\u0000op\u0005\u000e\u0000"+
+		"n\u0005\f\u0000\u0000n\u0083\u0001\u0000\u0000\u0000op\u0005\u0010\u0000"+
 		"\u0000pq\u0005\u0004\u0000\u0000qr\u0003\u0018\f\u0000rs\u0005\u0005\u0000"+
-		"\u0000sv\u0003\u0002\u0001\u0000tu\u0005\u000f\u0000\u0000uw\u0003\u0002"+
-		"\u0001\u0000vt\u0001\u0000\u0000\u0000vw\u0001\u0000\u0000\u0000w\u0083"+
-		"\u0001\u0000\u0000\u0000xy\u0005\u0010\u0000\u0000yz\u0005\u0004\u0000"+
-		"\u0000z{\u0003\u0018\f\u0000{|\u0005\u0005\u0000\u0000|}\u0003\u0002\u0001"+
+		"\u0000st\u0003\u0002\u0001\u0000t\u0083\u0001\u0000\u0000\u0000uv\u0005"+
+		"\u000e\u0000\u0000vw\u0005\u0004\u0000\u0000wx\u0003\u0018\f\u0000xy\u0005"+
+		"\u0005\u0000\u0000y|\u0003\u0002\u0001\u0000z{\u0005\u000f\u0000\u0000"+
+		"{}\u0003\u0002\u0001\u0000|z\u0001\u0000\u0000\u0000|}\u0001\u0000\u0000"+
 		"\u0000}\u0083\u0001\u0000\u0000\u0000~\u007f\u0005\u0011\u0000\u0000\u007f"+
 		"\u0080\u0003\u0018\f\u0000\u0080\u0081\u0005\f\u0000\u0000\u0081\u0083"+
 		"\u0001\u0000\u0000\u0000\u0082^\u0001\u0000\u0000\u0000\u0082f\u0001\u0000"+
 		"\u0000\u0000\u0082k\u0001\u0000\u0000\u0000\u0082o\u0001\u0000\u0000\u0000"+
-		"\u0082x\u0001\u0000\u0000\u0000\u0082~\u0001\u0000\u0000\u0000\u0083\t"+
+		"\u0082u\u0001\u0000\u0000\u0000\u0082~\u0001\u0000\u0000\u0000\u0083\t"+
 		"\u0001\u0000\u0000\u0000\u0084\u0085\u0007\u0000\u0000\u0000\u0085\u000b"+
 		"\u0001\u0000\u0000\u0000\u0086\u0087\u0003\u0010\b\u0000\u0087\u0088\u0003"+
 		"\u001c\u000e\u0000\u0088\u0089\u0005\f\u0000\u0000\u0089\r\u0001\u0000"+
@@ -3168,7 +3168,7 @@ public class MiniCParser extends Parser {
 		"\u0001\u0000\u0000\u0000\u0151\u0154\u0001\u0000\u0000\u0000\u0152\u0150"+
 		"\u0001\u0000\u0000\u0000\u0152\u0153\u0001\u0000\u0000\u0000\u0153\u001d"+
 		"\u0001\u0000\u0000\u0000\u0154\u0152\u0001\u0000\u0000\u0000\u001a!.<"+
-		"?Z^v\u0082\u008f\u00a0\u00aa\u00b3\u00b7\u00c1\u00c3\u00cb\u00d0\u0100"+
+		"?Z^|\u0082\u008f\u00a0\u00aa\u00b3\u00b7\u00c1\u00c3\u00cb\u00d0\u0100"+
 		"\u010c\u012e\u0130\u0139\u013c\u0146\u0150\u0152";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());

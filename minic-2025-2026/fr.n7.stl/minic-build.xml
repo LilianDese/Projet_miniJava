@@ -9,8 +9,10 @@
 
 
 	<path id="libraries">
-		<files includes="${tools}/commons-text-1.9.jar" />
-		<files includes="${tools}/antlr-4.13.1-complete.jar" />
+	    <fileset dir="${tools}">
+	        <include name="commons-text-1.9.jar" />
+	        <include name="antlr-4.13.1-complete.jar" />
+	    </fileset>
 	</path>
 
 	<target name="generate">

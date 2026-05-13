@@ -9,6 +9,7 @@ import fr.n7.stl.minic.ast.expression.accessible.AccessibleExpression;
 import fr.n7.stl.minic.ast.expression.assignable.AssignableExpression;
 import fr.n7.stl.minic.ast.scope.Declaration;
 import fr.n7.stl.minic.ast.scope.HierarchicalScope;
+import fr.n7.stl.minic.ast.type.ArrayType;
 import fr.n7.stl.minic.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.TAMFactory;
@@ -42,22 +43,21 @@ public class ArrayAllocation implements AccessibleExpression, AssignableExpressi
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
 		return this.size.collectAndPartialResolve(_scope);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see fr.n7.stl.block.ast.expression.Expression#resolve(fr.n7.stl.block.ast.scope.Scope)
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = this.size.completeResolve(_scope);
-		ok &= this.element.completeResolve(_scope);
-		return ok;
+		return this.element.completeResolve(_scope) && this.size.completeResolve(_scope);
 	}
+
 	/* (non-Javadoc)
 	 * @see fr.n7.stl.block.ast.Expression#getType()
 	 */
 	@Override
 	public Type getType() {
-		return new fr.n7.stl.minic.ast.type.ArrayType(this.element);
+		return new ArrayType(this.element);
 	}
 
 	/* (non-Javadoc)
@@ -68,14 +68,9 @@ public class ArrayAllocation implements AccessibleExpression, AssignableExpressi
 		Fragment _result = _factory.createFragment();
 		_result.append(this.size.getCode(_factory));
 		_result.add(_factory.createLoadL(this.element.length()));
-		_result.add(TAMFactory.createBinaryOperator(fr.n7.stl.minic.ast.expression.accessible.BinaryOperator.Multiply));
+		_result.add(fr.n7.stl.tam.ast.Library.IMul);
 		_result.add(fr.n7.stl.tam.ast.Library.MAlloc);
 		return _result;
-	}
-
-	@Override
-	public Fragment getAddressCode(TAMFactory _factory) {
-		return this.getCode(_factory);
 	}
 
 }

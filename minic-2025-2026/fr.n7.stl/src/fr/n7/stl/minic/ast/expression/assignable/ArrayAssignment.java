@@ -31,25 +31,12 @@ public class ArrayAssignment extends AbstractArray<AssignableExpression> impleme
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
 		Fragment _result = _factory.createFragment();
-		_result.append(this.getAddressCode(_factory));
-		_result.add(_factory.createStoreI(this.getType().length()));
-		return _result;
-	}
-
-	@Override
-	public Fragment getAddressCode(TAMFactory _factory) {
-		Fragment _result = _factory.createFragment();
-		// Compute base address: array is a pointer
-		_result.append(this.array.getAddressCode(_factory));
-		_result.add(_factory.createLoadI(((fr.n7.stl.minic.ast.expression.Expression)this.array).getType().length()));
-		
-		// Compute index
+		_result.append(this.array.getCode(_factory));
+		_result.add(_factory.createLoadI(1));
 		_result.append(this.index.getCode(_factory));
-		// Multiply index by element size
 		_result.add(_factory.createLoadL(this.getType().length()));
-		_result.add(TAMFactory.createBinaryOperator(fr.n7.stl.minic.ast.expression.accessible.BinaryOperator.Multiply));
-		// Add to base address
-		_result.add(TAMFactory.createBinaryOperator(fr.n7.stl.minic.ast.expression.accessible.BinaryOperator.Add));
+		_result.add(fr.n7.stl.tam.ast.Library.IMul);
+		_result.add(fr.n7.stl.tam.ast.Library.IAdd);
 		return _result;
 	}
 

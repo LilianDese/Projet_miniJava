@@ -9,6 +9,7 @@ import fr.n7.stl.minic.ast.expression.accessible.AccessibleExpression;
 import fr.n7.stl.minic.ast.expression.assignable.AssignableExpression;
 import fr.n7.stl.minic.ast.scope.Declaration;
 import fr.n7.stl.minic.ast.scope.HierarchicalScope;
+import fr.n7.stl.minic.ast.type.PointerType;
 import fr.n7.stl.minic.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.TAMFactory;
@@ -54,7 +55,7 @@ public class PointerAllocation implements AccessibleExpression, AssignableExpres
 	 */
 	@Override
 	public Type getType() {
-		return new fr.n7.stl.minic.ast.type.PointerType(this.element);
+		return new PointerType(this.element);
 	}
 
 	/* (non-Javadoc)
@@ -66,11 +67,6 @@ public class PointerAllocation implements AccessibleExpression, AssignableExpres
 		_result.add(_factory.createLoadL(this.element.length()));
 		_result.add(fr.n7.stl.tam.ast.Library.MAlloc);
 		return _result;
-	}
-
-	@Override
-	public Fragment getAddressCode(TAMFactory _factory) {
-		return this.getCode(_factory);
 	}
 
 }

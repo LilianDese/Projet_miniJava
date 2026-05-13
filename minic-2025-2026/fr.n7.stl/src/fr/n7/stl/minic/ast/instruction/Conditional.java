@@ -3,20 +3,21 @@
  */
 package fr.n7.stl.minic.ast.instruction;
 
-import java.util.Optional;
-
 import fr.n7.stl.minic.ast.Block;
 import fr.n7.stl.minic.ast.SemanticsUndefinedException;
 import fr.n7.stl.minic.ast.expression.Expression;
 import fr.n7.stl.minic.ast.instruction.declaration.FunctionDeclaration;
 import fr.n7.stl.minic.ast.scope.Declaration;
 import fr.n7.stl.minic.ast.scope.HierarchicalScope;
+import fr.n7.stl.minic.ast.type.AtomicType;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.Register;
 import fr.n7.stl.tam.ast.TAMFactory;
 
 /**
- * Implementation of the Abstract Syntax Tree node for a conditional instruction.
+ * Implementation of the Abstract Syntax Tree node for a conditional
+ * instruction.
+ * 
  * @author Marc Pantel
  *
  */
@@ -38,76 +39,99 @@ public class Conditional implements Instruction {
 		this.elseBranch = null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "if (" + this.condition + " )" + this.thenBranch + ((this.elseBranch != null)?(" else " + this.elseBranch):"");
+		return "if (" + this.condition + " )" + this.thenBranch
+				+ ((this.elseBranch != null) ? (" else " + this.elseBranch) : "");
 	}
-	
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.instruction.Instruction#collect(fr.n7.stl.block.ast.scope.Scope)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.n7.stl.block.ast.instruction.Instruction#collect(fr.n7.stl.block.ast.scope
+	 * .Scope)
 	 */
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = this.condition.collectAndPartialResolve(_scope);
-		ok &= this.thenBranch.collectAndPartialResolve(_scope);
+		boolean _condition = this.condition.collectAndPartialResolve(_scope);
+		boolean _then = this.thenBranch.collectAndPartialResolve(_scope);
+		boolean _else = true;
 		if (this.elseBranch != null) {
-			ok &= this.elseBranch.collectAndPartialResolve(_scope);
+			_else = this.elseBranch.collectAndPartialResolve(_scope);
 		}
-		return ok;
+		return _condition && _then && _else;
 	}
-	
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.instruction.Instruction#collect(fr.n7.stl.block.ast.scope.Scope)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.n7.stl.block.ast.instruction.Instruction#collect(fr.n7.stl.block.ast.scope
+	 * .Scope)
 	 */
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope, FunctionDeclaration _container) {
-		boolean ok = this.condition.collectAndPartialResolve(_scope);
-		ok &= this.thenBranch.collectAndPartialResolve(_scope, _container);
+		boolean _condition = this.condition.collectAndPartialResolve(_scope);
+		boolean _then = this.thenBranch.collectAndPartialResolve(_scope, _container);
+		boolean _else = true;
 		if (this.elseBranch != null) {
-			ok &= this.elseBranch.collectAndPartialResolve(_scope, _container);
+			_else = this.elseBranch.collectAndPartialResolve(_scope, _container);
 		}
-		return ok;
+		return _condition && _then && _else;
 	}
-	
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.instruction.Instruction#resolve(fr.n7.stl.block.ast.scope.Scope)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.n7.stl.block.ast.instruction.Instruction#resolve(fr.n7.stl.block.ast.scope
+	 * .Scope)
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = this.condition.completeResolve(_scope);
-		ok &= this.thenBranch.completeResolve(_scope);
+		boolean _condition = this.condition.completeResolve(_scope);
+		boolean _then = this.thenBranch.completeResolve(_scope);
+		boolean _else = true;
 		if (this.elseBranch != null) {
-			ok &= this.elseBranch.completeResolve(_scope);
+			_else = this.elseBranch.completeResolve(_scope);
 		}
-		return ok;
+		return _condition && _then && _else;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.n7.stl.block.ast.Instruction#checkType()
 	 */
 	@Override
 	public boolean checkType() {
-		boolean ok = true;
-		if (!this.condition.getType().compatibleWith(fr.n7.stl.minic.ast.type.AtomicType.BooleanType)) {
-			fr.n7.stl.util.Logger.error("Condition must be boolean.");
-			ok = false;
-		}
-		ok &= this.thenBranch.checkType();
+		boolean ConditionType = this.condition.getType().compatibleWith(AtomicType.BooleanType);
+		boolean thenType = this.thenBranch.checkType();
+		boolean elseType = true;
+
 		if (this.elseBranch != null) {
-			ok &= this.elseBranch.checkType();
+			elseType = this.elseBranch.checkType();
 		}
-		return ok;
+
+		return ConditionType && thenType && elseType;
+
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.n7.stl.block.ast.Instruction#allocateMemory(fr.n7.stl.tam.ast.Register, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.n7.stl.block.ast.Instruction#allocateMemory(fr.n7.stl.tam.ast.Register,
+	 * int)
 	 */
 	@Override
 	public int allocateMemory(Register _register, int _offset) {
-		// Both branches start at the same offset; no memory allocated by this instruction itself
 		this.thenBranch.allocateMemory(_register, _offset);
 		if (this.elseBranch != null) {
 			this.elseBranch.allocateMemory(_register, _offset);
@@ -115,32 +139,34 @@ public class Conditional implements Instruction {
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.n7.stl.block.ast.Instruction#getCode(fr.n7.stl.tam.ast.TAMFactory)
 	 */
 	@Override
 	public Fragment getCode(TAMFactory _factory) {
-		int labelNum = _factory.createLabelNumber();
-		Fragment _result = this.condition.getCode(_factory);
-		_result.addComment("if (...)");
+		Fragment _result = _factory.createFragment();
+		int id = _factory.createLabelNumber();
+		String elseLabel = "else_" + id;
+		String endLabel = "end_if_" + id;
+
+		_result.append(this.condition.getCode(_factory));
+		_result.add(_factory.createJumpIf(elseLabel, 0));
+		_result.append(this.thenBranch.getCode(_factory));
+
 		if (this.elseBranch != null) {
-			// if-else: jump to else if condition is false (0)
-			String elseLabel = "else_" + labelNum;
-			String endLabel = "endif_" + labelNum;
-			_result.add(_factory.createJumpIf(elseLabel, 0));
-			_result.append(this.thenBranch.getCode(_factory));
 			_result.add(_factory.createJump(endLabel));
-			Fragment _else = this.elseBranch.getCode(_factory);
-			_else.addPrefix(elseLabel);
-			_result.append(_else);
+			_result.add(_factory.createPop(0, 0));
+			_result.addPrefix(elseLabel);
+			_result.append(this.elseBranch.getCode(_factory));
+			_result.add(_factory.createPop(0, 0));
 			_result.addSuffix(endLabel);
 		} else {
-			// if only: jump to end if condition is false (0)
-			String endLabel = "endif_" + labelNum;
-			_result.add(_factory.createJumpIf(endLabel, 0));
-			_result.append(this.thenBranch.getCode(_factory));
-			_result.addSuffix(endLabel);
+			_result.add(_factory.createPop(0, 0));
+			_result.addSuffix(elseLabel);
 		}
+
 		return _result;
 	}
 

@@ -158,18 +158,6 @@ public class MiniCParserBaseListener implements MiniCParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInstructionSiSinon(MiniCParser.InstructionSiSinonContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionSiSinon(MiniCParser.InstructionSiSinonContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterInstructionTantQue(MiniCParser.InstructionTantQueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -177,6 +165,18 @@ public class MiniCParserBaseListener implements MiniCParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitInstructionTantQue(MiniCParser.InstructionTantQueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInstructionSiSinon(MiniCParser.InstructionSiSinonContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInstructionSiSinon(MiniCParser.InstructionSiSinonContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

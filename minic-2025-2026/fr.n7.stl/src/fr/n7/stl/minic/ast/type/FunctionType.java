@@ -38,14 +38,13 @@ public class FunctionType implements Type {
 			FunctionType other = (FunctionType) _other;
 			if (this.parameters.size() != other.parameters.size()) return false;
 			if (!this.result.equalsTo(other.result)) return false;
-			Iterator<Type> it1 = this.parameters.iterator();
-			Iterator<Type> it2 = other.parameters.iterator();
-			while (it1.hasNext() && it2.hasNext()) {
-				if (!it1.next().equalsTo(it2.next())) return false;
-			}
+			for (int i = 0; i < this.parameters.size(); i++) {
+            	if (!this.parameters.get(i).equalsTo(other.parameters.get(i))) return false;
+        	}
 			return true;
 		}
-		return false;
+		return false; 
+
 	}
 
 	/* (non-Javadoc)
@@ -57,14 +56,12 @@ public class FunctionType implements Type {
 			FunctionType other = (FunctionType) _other;
 			if (this.parameters.size() != other.parameters.size()) return false;
 			if (!this.result.compatibleWith(other.result)) return false;
-			Iterator<Type> it1 = this.parameters.iterator();
-			Iterator<Type> it2 = other.parameters.iterator();
-			while (it1.hasNext() && it2.hasNext()) {
-				if (!it2.next().compatibleWith(it1.next())) return false;
-			}
+			for (int i = 0; i < this.parameters.size(); i++) {
+            	if (!this.parameters.get(i).compatibleWith(other.parameters.get(i))) return false;
+        	}
 			return true;
 		}
-		return false;
+		return false; 
 	}
 
 	/* (non-Javadoc)
@@ -72,22 +69,16 @@ public class FunctionType implements Type {
 	 */
 	@Override
 	public Type merge(Type _other) {
-		if (_other instanceof FunctionType) {
-			FunctionType other = (FunctionType) _other;
-			if (this.parameters.size() != other.parameters.size()) return AtomicType.ErrorType;
-			Type mergedResult = this.result.merge(other.result);
-			List<Type> mergedParams = new LinkedList<>();
-			Iterator<Type> it1 = this.parameters.iterator();
-			Iterator<Type> it2 = other.parameters.iterator();
-			while (it1.hasNext() && it2.hasNext()) {
-				Type mergedParam = it1.next().merge(it2.next());
-				if (mergedParam.equalsTo(AtomicType.ErrorType)) return AtomicType.ErrorType;
-				mergedParams.add(mergedParam);
-			}
-			if (mergedResult.equalsTo(AtomicType.ErrorType)) return AtomicType.ErrorType;
-			return new FunctionType(mergedResult, mergedParams);
+		if(this.compatibleWith(_other)){
+			return _other;
 		}
-		return AtomicType.ErrorType;
+		else if (_other.compatibleWith(this)){
+			return this;
+		}
+		else{
+			return AtomicType.ErrorType;
+		} 
+		 
 	}
 
 	/* (non-Javadoc)
@@ -95,7 +86,7 @@ public class FunctionType implements Type {
 	 */
 	@Override
 	public int length() {
-		return 0;
+		return 1;
 	}
 
 	/* (non-Javadoc)
@@ -119,10 +110,12 @@ public class FunctionType implements Type {
 	 */
 	@Override
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
-		boolean ok = this.result.completeResolve(_scope);
-		for (Type param : this.parameters) {
-			ok &= param.completeResolve(_scope);
-		}
+		boolean ok = result.completeResolve(_scope);
+
+		for(Type param : this.parameters){
+			ok = ok && param.completeResolve(_scope);
+		} 
+
 		return ok;
 	}
 

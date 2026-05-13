@@ -3,7 +3,10 @@ package fr.n7.stl.minic.ast.expression;
 import fr.n7.stl.minic.ast.SemanticsUndefinedException;
 import fr.n7.stl.minic.ast.scope.Declaration;
 import fr.n7.stl.minic.ast.scope.HierarchicalScope;
+import fr.n7.stl.minic.ast.type.AtomicType;
+import fr.n7.stl.minic.ast.type.PointerType;
 import fr.n7.stl.minic.ast.type.Type;
+import fr.n7.stl.util.Logger;
 
 /**
  * Common elements between left (Assignable) and right (Expression) end sides of assignments. These elements
@@ -39,9 +42,9 @@ public abstract class AbstractPointer<PointerKind extends Expression> implements
 	 */
 	@Override
 	public boolean collectAndPartialResolve(HierarchicalScope<Declaration> _scope) {
-		return this.pointer.collectAndPartialResolve(_scope);
+		return this.pointer.collectAndPartialResolve(_scope);	
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see fr.n7.stl.block.ast.expression.Expression#resolve(fr.n7.stl.block.ast.scope.HierarchicalScope)
 	 */
@@ -49,18 +52,19 @@ public abstract class AbstractPointer<PointerKind extends Expression> implements
 	public boolean completeResolve(HierarchicalScope<Declaration> _scope) {
 		return this.pointer.completeResolve(_scope);
 	}
+
 	/**
 	 * Synthesized Semantics attribute to compute the type of an expression.
 	 * @return Synthesized Type of the expression.
 	 */
 	public Type getType() {
 		Type pointerType = this.pointer.getType();
-		if (pointerType instanceof fr.n7.stl.minic.ast.type.PointerType) {
-			return ((fr.n7.stl.minic.ast.type.PointerType) pointerType).getPointedType();
-		} else {
-			fr.n7.stl.util.Logger.error("Not a pointer type.");
-			return fr.n7.stl.minic.ast.type.AtomicType.ErrorType;
-		}
+		if (pointerType instanceof PointerType) {
+        	return ((PointerType) pointerType).getPointedType();
+    	} else {
+        	Logger.error("Not a pointer type");
+        	return AtomicType.ErrorType;
+    	}
 	}
 
 }

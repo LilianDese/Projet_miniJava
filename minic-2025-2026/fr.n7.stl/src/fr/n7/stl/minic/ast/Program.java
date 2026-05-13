@@ -131,14 +131,13 @@ public class Program {
 	 * @return Synthesized AST for the generated TAM code.
 	 */
 	public Fragment getCode(TAMFactory _factory) {
-		Fragment _result = _factory.createFragment();
-		// Code for global declarations (constants, type declarations - no runtime code for those)
+		Fragment frag = _factory.createFragment();
 		for (DeclarationInstruction declaration : this.declarations) {
-			_result.append(declaration.getCode(_factory));
+			frag.append(declaration.getCode(_factory));
 		}
-		// Code for the main block
-		_result.append(this.main.getCode(_factory));
-		return _result;
+		frag.append(this.main.getCode(_factory));
+		frag.add(_factory.createHalt());
+		return frag;
 	}
 
 }

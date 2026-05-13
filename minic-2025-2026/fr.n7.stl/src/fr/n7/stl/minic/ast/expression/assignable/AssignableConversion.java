@@ -13,9 +13,4 @@ public class AssignableConversion extends AbstractConversion<AssignableExpressio
 		super(_target, _type);
 	}
 
-	@Override
-	public fr.n7.stl.tam.ast.Fragment getAddressCode(fr.n7.stl.tam.ast.TAMFactory _factory) {
-		return this.target.getAddressCode(_factory);
-	}
-
 }

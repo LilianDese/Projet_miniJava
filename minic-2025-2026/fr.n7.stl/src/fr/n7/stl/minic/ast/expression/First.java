@@ -7,9 +7,12 @@ import fr.n7.stl.minic.ast.SemanticsUndefinedException;
 import fr.n7.stl.minic.ast.expression.accessible.AccessibleExpression;
 import fr.n7.stl.minic.ast.scope.Declaration;
 import fr.n7.stl.minic.ast.scope.HierarchicalScope;
+import fr.n7.stl.minic.ast.type.AtomicType;
+import fr.n7.stl.minic.ast.type.CoupleType;
 import fr.n7.stl.minic.ast.type.Type;
 import fr.n7.stl.tam.ast.Fragment;
 import fr.n7.stl.tam.ast.TAMFactory;
+import fr.n7.stl.util.Logger;
 
 /**
  * Abstract Syntax Tree node for an expression extracting the first component in a couple.
@@ -35,7 +38,7 @@ public class First implements AccessibleExpression {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "(fst" + this.target + ")";
+		return "(fst " + this.target + ")";
 	}
 	
 	/* (non-Javadoc)
@@ -60,12 +63,14 @@ public class First implements AccessibleExpression {
 	@Override
 	public Type getType() {
 		Type targetType = this.target.getType();
-		if (targetType instanceof fr.n7.stl.minic.ast.type.CoupleType) {
-			return ((fr.n7.stl.minic.ast.type.CoupleType) targetType).getFirst();
-		} else {
-			fr.n7.stl.util.Logger.error("Not a couple type.");
-			return fr.n7.stl.minic.ast.type.AtomicType.ErrorType;
-		}
+		
+		if (targetType instanceof CoupleType) {
+        	return ((CoupleType) targetType).getFirst();
+    	} else {
+			Logger.error("Not a couple type");
+			return AtomicType.ErrorType;
+    	}
+
 	}
 
 	/* (non-Javadoc)
@@ -76,12 +81,10 @@ public class First implements AccessibleExpression {
 		Fragment _result = _factory.createFragment();
 		_result.append(this.target.getCode(_factory));
 		
-		int secondSize = ((fr.n7.stl.minic.ast.type.CoupleType)this.target.getType()).getSecond().length();
+		int firstSize = ((CoupleType) this.target.getType()).getFirst().length();
+		int secondSize = ((CoupleType) this.target.getType()).getSecond().length();
 		
-		if (secondSize > 0) {
-			_result.add(_factory.createPop(0, secondSize));
-		}
-		
+		_result.add(_factory.createPop(firstSize, secondSize));
 		return _result;
 	}
 

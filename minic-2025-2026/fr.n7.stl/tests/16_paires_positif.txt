@@ -1,0 +1,9 @@
+void main() {
+    <int,int> p = <3,2>;
+    int x = fst(p);
+    int y = snd(p);
+
+    print(x); 
+    print(y);
+
+}
