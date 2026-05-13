@@ -1,0 +1,5 @@
+// EXPECTED ERROR: The identifier x is already known.
+void main() {
+    int x = 10;
+    int x = 20;
+}

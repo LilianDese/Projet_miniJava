@@ -1,0 +1,6 @@
+// EXPECTED ERROR: Type verification failed (assignment type mismatch).
+void main() {
+    int x = 10;
+    boolean b = true;
+    x = b;
+}

@@ -1,0 +1,6 @@
+void main() {
+    <int, int> p = <10, 20>;
+    int a = fst p;
+    int b = snd p;
+    print (a + b);
+}

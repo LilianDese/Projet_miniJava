@@ -1,0 +1,5 @@
+// EXPECTED ERROR: The identifier y has not been found.
+void main() {
+    int x = 10;
+    x = y + 1;
+}

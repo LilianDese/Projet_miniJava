@@ -1,0 +1,13 @@
+void main() {
+    int *p = new int();
+    *p = 42;
+    int a = *p;
+    
+    int t[] = new int[3];
+    t[0] = 10;
+    t[1] = 20;
+    t[2] = 30;
+    int b = t[1];
+    
+    print (a + b);
+}

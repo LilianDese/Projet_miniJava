@@ -1,0 +1,13 @@
+int main() {
+    int *p = malloc(int);
+    *p = 42;
+    int a = *p;
+    
+    int t[] = malloc(3 * int);
+    t[0] = 10;
+    t[1] = 20;
+    t[2] = 30;
+    int b = t[1];
+    
+    return a + b;
+}

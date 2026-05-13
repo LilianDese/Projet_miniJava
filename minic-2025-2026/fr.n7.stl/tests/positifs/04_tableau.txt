@@ -1,0 +1,7 @@
+void main() {
+    int t[] = new int[3];
+    t[0] = 5;
+    t[1] = 10;
+    t[2] = 15;
+    print t[1];
+}

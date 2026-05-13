@@ -1,0 +1,236 @@
+=== COMPILATION DU PROJET ===
+Compilation terminée.
+
+=========================================
+=== TESTS POSITIFS (Génération TAM) ===
+=========================================
+--- Test : tests/positifs/01_expressions.txt ---
+void main() {
+int a = (10 + (5 * 2));
+boolean b = ((a > 15) && true);
+print a;
+}
+
+collect succeeded
+Resolve succeeded.
+Error : Variable type mismatch in declaration of b
+Exception in thread "main" fr.n7.stl.util.BlockSemanticsError
+	at fr.n7.stl.util.Logger.error(Logger.java:18)
+	at fr.n7.stl.minic.ast.instruction.declaration.VariableDeclaration.checkType(VariableDeclaration.java:138)
+	at fr.n7.stl.minic.ast.Block.checkType(Block.java:123)
+	at fr.n7.stl.minic.ast.Program.checkType(Program.java:108)
+	at fr.n7.stl.minic.ASTBuilder.startCompilation(ASTBuilder.java:49)
+	at fr.n7.stl.minic.Driver.main(Driver.java:40)
+--- Test : tests/positifs/02_instructions.txt ---
+void main() {
+int a = 0;
+int i = 0;
+while ((i < 5) ){
+if (((i % 2) == 0) ){
+ a  = (a + i);
+}
+ else {
+ a  = (a - 1);
+}
+ i  = (i + 1);
+}
+print a;
+}
+
+collect succeeded
+Resolve succeeded.
+Type verification succeeded.
+Code generation ...
+Code generation finished
+>>> Exécution TAM : tests/positifs/02_instructions.tam
+4
+
+--- Test : tests/positifs/03_paire.txt ---
+void main() {
+< int, int> p = < 10, 20>;
+int a = (fstp);
+int b = (sndp);
+print (a + b);
+}
+
+collect succeeded
+Resolve succeeded.
+Type verification succeeded.
+Code generation ...
+Code generation finished
+>>> Exécution TAM : tests/positifs/03_paire.tam
+30
+
+--- Test : tests/positifs/04_tableau.txt ---
+line 2:7 mismatched input '[' expecting {'(', '*', Identificateur}
+Exception in thread "main" java.lang.NullPointerException: Cannot read field "unIdentifiant" because the return value of "fr.n7.stl.minic.parser.MiniCParser$IdentifiantContext.identifiant()" is null
+	at fr.n7.stl.minic.ASTBuilder.exitIdentifiant(ASTBuilder.java:513)
+	at fr.n7.stl.minic.parser.MiniCParser$IdentifiantContext.exitRule(MiniCParser.java:2787)
+	at org.antlr.v4.runtime.tree.ParseTreeWalker.exitRule(ParseTreeWalker.java:62)
+	at org.antlr.v4.runtime.tree.ParseTreeWalker.walk(ParseTreeWalker.java:38)
+	at org.antlr.v4.runtime.tree.ParseTreeWalker.walk(ParseTreeWalker.java:36)
+	at org.antlr.v4.runtime.tree.ParseTreeWalker.walk(ParseTreeWalker.java:36)
+	at org.antlr.v4.runtime.tree.ParseTreeWalker.walk(ParseTreeWalker.java:36)
+	at fr.n7.stl.minic.Driver.main(Driver.java:36)
+--- Test : tests/positifs/05_pointeur.txt ---
+void main() {
+(int *) p = new int;
+(*p) = 42;
+int a = * p;
+print a;
+}
+
+collect succeeded
+Resolve succeeded.
+Type verification succeeded.
+Code generation ...
+Code generation finished
+>>> Exécution TAM : tests/positifs/05_pointeur.tam
+42
+
+--- Test : tests/positifs/06_enregistrement.txt ---
+typedef struct Point { int x; int y;} Point;
+
+void main() {
+Point p = { 10 ,20 };
+ p .x = 15;
+print p.x;
+}
+
+collect succeeded
+Resolve succeeded.
+Type verification succeeded.
+Code generation ...
+Code generation finished
+>>> Exécution TAM : tests/positifs/06_enregistrement.tam
+15
+
+--- Test : tests/positifs/07_fonction.txt ---
+int carre( int x ){
+return (x * x);
+}
+
+void main() {
+int a = carre( 5);
+print a;
+}
+
+collect succeeded
+Resolve succeeded.
+Type verification succeeded.
+Code generation ...
+Code generation finished
+>>> Exécution TAM : tests/positifs/07_fonction.tam
+25
+
+
+=========================================
+=== TESTS NÉGATIFS (Erreurs gérées) ===
+=========================================
+--- Test : tests/negatifs/01_tds_non_declare.txt ---
+// EXPECTED ERROR: The identifier y has not been found.
+void main() {
+int x = 10;
+ x  = (y + 1);
+}
+
+Collect failed : 
+
+--- Test : tests/negatifs/02_tds_double_declaration.txt ---
+// EXPECTED ERROR: The identifier x is already known.
+void main() {
+int x = 10;
+int x = 20;
+}
+
+Error : Variable : x is already defined.
+Exception in thread "main" fr.n7.stl.util.BlockSemanticsError
+	at fr.n7.stl.util.Logger.error(Logger.java:18)
+	at fr.n7.stl.minic.ast.instruction.declaration.VariableDeclaration.collectAndPartialResolve(VariableDeclaration.java:111)
+	at fr.n7.stl.minic.ast.Block.collectAndPartialResolve(Block.java:77)
+	at fr.n7.stl.minic.ast.Program.collectAndPartialResolve(Program.java:77)
+	at fr.n7.stl.minic.ASTBuilder.startCompilation(ASTBuilder.java:45)
+	at fr.n7.stl.minic.Driver.main(Driver.java:40)
+
+--- Test : tests/negatifs/03_typage_incompatible.txt ---
+// EXPECTED ERROR: Type verification failed (assignment type mismatch).
+void main() {
+int x = 10;
+boolean b = true;
+ x  = b;
+}
+
+collect succeeded
+Resolve succeeded.
+Error : Assignment type mismatch.
+Exception in thread "main" fr.n7.stl.util.BlockSemanticsError
+	at fr.n7.stl.util.Logger.error(Logger.java:18)
+	at fr.n7.stl.minic.ast.instruction.Assignment.checkType(Assignment.java:87)
+	at fr.n7.stl.minic.ast.Block.checkType(Block.java:123)
+	at fr.n7.stl.minic.ast.Program.checkType(Program.java:108)
+	at fr.n7.stl.minic.ASTBuilder.startCompilation(ASTBuilder.java:49)
+	at fr.n7.stl.minic.Driver.main(Driver.java:40)
+
+--- Test : tests/negatifs/04_typage_condition.txt ---
+// EXPECTED ERROR: Type verification failed (condition not boolean).
+void main() {
+int x = 10;
+if ((x + 1) ){
+print x;
+}
+}
+
+collect succeeded
+Resolve succeeded.
+Error : Condition must be boolean.
+Exception in thread "main" fr.n7.stl.util.BlockSemanticsError
+	at fr.n7.stl.util.Logger.error(Logger.java:18)
+	at fr.n7.stl.minic.ast.instruction.Conditional.checkType(Conditional.java:95)
+	at fr.n7.stl.minic.ast.Block.checkType(Block.java:123)
+	at fr.n7.stl.minic.ast.Program.checkType(Program.java:108)
+	at fr.n7.stl.minic.ASTBuilder.startCompilation(ASTBuilder.java:49)
+	at fr.n7.stl.minic.Driver.main(Driver.java:40)
+
+--- Test : tests/negatifs/05_typage_fonction.txt ---
+// EXPECTED ERROR: Type verification failed (wrong arguments for function).
+int carre( int x ){
+return (x * x);
+}
+
+void main() {
+boolean b = true;
+int a = carre( b);
+}
+
+collect succeeded
+Resolve succeeded.
+Error : Argument type mismatch for function carre
+Exception in thread "main" fr.n7.stl.util.BlockSemanticsError
+	at fr.n7.stl.util.Logger.error(Logger.java:18)
+	at fr.n7.stl.minic.ast.expression.FunctionCall.getType(FunctionCall.java:118)
+	at fr.n7.stl.minic.ast.instruction.declaration.VariableDeclaration.checkType(VariableDeclaration.java:136)
+	at fr.n7.stl.minic.ast.Block.checkType(Block.java:123)
+	at fr.n7.stl.minic.ast.Program.checkType(Program.java:108)
+	at fr.n7.stl.minic.ASTBuilder.startCompilation(ASTBuilder.java:49)
+	at fr.n7.stl.minic.Driver.main(Driver.java:40)
+
+--- Test : tests/negatifs/06_pointeur_type.txt ---
+// EXPECTED ERROR: Type verification failed (dereferencing non-pointer).
+void main() {
+int x = 10;
+int a = * x;
+}
+
+collect succeeded
+Resolve succeeded.
+Error : Not a pointer type.
+Exception in thread "main" fr.n7.stl.util.BlockSemanticsError
+	at fr.n7.stl.util.Logger.error(Logger.java:18)
+	at fr.n7.stl.minic.ast.expression.AbstractPointer.getType(AbstractPointer.java:61)
+	at fr.n7.stl.minic.ast.instruction.declaration.VariableDeclaration.checkType(VariableDeclaration.java:136)
+	at fr.n7.stl.minic.ast.Block.checkType(Block.java:123)
+	at fr.n7.stl.minic.ast.Program.checkType(Program.java:108)
+	at fr.n7.stl.minic.ASTBuilder.startCompilation(ASTBuilder.java:49)
+	at fr.n7.stl.minic.Driver.main(Driver.java:40)
+
+Tests terminés.

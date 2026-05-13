@@ -1,0 +1,5 @@
+// EXPECTED ERROR: Type verification failed (dereferencing non-pointer).
+void main() {
+    int x = 10;
+    int a = *x;
+}
